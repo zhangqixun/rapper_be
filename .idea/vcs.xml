@@ -2,5 +2,12 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/src/github.com/c4pt0r/ini" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/src/github.com/garyburd/redigo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/src/github.com/gorilla/mux" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/src/github.com/kr/pretty" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/src/github.com/kr/text" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/src/github.com/satori/go.uuid" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/src/gopkg.in/check.v1" vcs="Git" />
   </component>
 </project>

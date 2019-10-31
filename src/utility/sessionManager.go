@@ -1,7 +1,6 @@
-package controllers
+package utility
 
 import (
-	"rapper_be/config"
 	"github.com/garyburd/redigo/redis"
 	"github.com/satori/go.uuid"
 	"net/http"
@@ -11,10 +10,10 @@ import (
 var RedisConn redis.Conn
 
 func establishRedis() {
-	RedisConn, _ = redis.Dial("tcp", config.C.Database.RedisAddr)
+	RedisConn, _ = redis.Dial("tcp", RedisAddr)
 }
 
-func PreprocessXHR(w *http.ResponseWriter,r *http.Request) {
+func PreprocessXHR(w *http.ResponseWriter, r *http.Request) {
 	(*w).Header().Set("Content-Type", "application/json")
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Credentials", "true")
