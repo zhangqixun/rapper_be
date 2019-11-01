@@ -1,13 +1,16 @@
 package main
 
 import (
-	"fmt"
+	"controllers"
+	"github.com/gorilla/mux"
 	"log"
+	"net/http"
 	"utility"
 )
 
 var DBString = utility.Conf.String("database", "connectString", "MySQL connectString")
 var RedisString = utility.Conf.String("database", "redisAddress", "Redis Address")
+var ServerPortString = utility.Conf.String("server", "serverPort", "Server Port")
 
 func main() {
 	err := utility.Conf.Parse()
@@ -16,7 +19,17 @@ func main() {
 		return
 	}
 	utility.RedisAddr = *RedisString
+	utility.DBAddr = *DBString
+	utility.ServerPort = *ServerPortString
 
-	fmt.Println("Ping!")
+	rtr := mux.NewRouter()
+	rtr.HandleFunc("/quickstart", controllers.QuickStart)
+	rtr.HandleFunc("/register", controllers.UserRegister).Methods("POST")
+	rtr.HandleFunc("/login", controllers.UserLogin).Methods("POST")
+	rtr.HandleFunc("/logout", controllers.UserLogout).Methods("POST")
+	rtr.HandleFunc("/editor", controllers.UserEditor).Methods("POST")
+	http.Handle("/", rtr)
+	http.ListenAndServe(utility.ServerPort, nil)
 
+	//fmt.Println("Ping!")
 }
