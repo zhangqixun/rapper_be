@@ -28,6 +28,8 @@ func main() {
 	rtr.HandleFunc("/login", controllers.UserLogin).Methods("POST")
 	rtr.HandleFunc("/logout", controllers.UserLogout).Methods("POST")
 	rtr.HandleFunc("/editor", controllers.UserEditor).Methods("POST")
+	rtr.HandleFunc("/userquery", controllers.UserQuery).Methods("POST")
+	rtr.HandleFunc("/passwdmodi", controllers.UserPasswordModification).Methods("POST")
 	http.Handle("/", rtr)
 	http.ListenAndServe(utility.ServerPort, nil)
 

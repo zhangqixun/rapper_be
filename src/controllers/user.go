@@ -39,6 +39,23 @@ type EditorRes struct {
 	Message string `json:"message"`
 }
 
+type QueryRes struct {
+	Code     string          `json:"code"`
+	Message  string          `json:"message"`
+	UserInfo models.UserInfo `json:"user_info"`
+}
+
+type PasswordModiInfo struct {
+	Token       string `json:"token"`
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
+type PasswordModiRes struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
 func UserRegister(w http.ResponseWriter, r *http.Request) {
 	utility.PreprocessXHR(&w, r)
 
@@ -122,6 +139,52 @@ func UserEditor(w http.ResponseWriter, r *http.Request) {
 		info = EditorRes{Code: models.REQUIRE_FIELD_EMPTY_CODE, Message: models.REQUIRE_FIELD_EMPTY_MESS}
 	} else if res == models.USER_NOT_EXIST {
 		info = EditorRes{Code: models.USER_NOT_EXIST_CODE, Message: models.USER_NOT_EXIST_MESS}
+	}
+	res_json, _ := json.Marshal(info)
+	fmt.Fprint(w, string(res_json))
+}
+
+func UserQuery(w http.ResponseWriter, r *http.Request) {
+	utility.PreprocessXHR(&w, r)
+
+	body, _ := ioutil.ReadAll(r.Body)
+	var token_info TokenInfo
+	_ = json.Unmarshal(body, &token_info)
+
+	id := utility.CheckSession(token_info.Token)
+	res, user_info := models.Query(id)
+	var info QueryRes
+	if res == models.SUCCESS {
+		info = QueryRes{Code: models.SUCCESS_CODE, Message: models.SUCCESS_MESS, UserInfo: user_info}
+	} else if res == models.DB_ERROR {
+		info = QueryRes{Code: models.DB_ERROR_CODE, Message: models.DB_ERROR_MESS}
+	} else if res == models.USER_NOT_EXIST {
+		info = QueryRes{Code: models.USER_NOT_EXIST_CODE, Message: models.USER_NOT_EXIST_MESS}
+	}
+	res_json, _ := json.Marshal(info)
+	fmt.Fprint(w, string(res_json))
+}
+
+func UserPasswordModification(w http.ResponseWriter, r *http.Request) {
+	utility.PreprocessXHR(&w, r)
+
+	body, _ := ioutil.ReadAll(r.Body)
+	var passwd_info PasswordModiInfo
+	_ = json.Unmarshal(body, &passwd_info)
+
+	id := utility.CheckSession(passwd_info.Token)
+	res := models.PasswordModification(id, passwd_info.OldPassword, passwd_info.NewPassword)
+	var info PasswordModiRes
+	if res == models.SUCCESS {
+		info = PasswordModiRes{Code: models.SUCCESS_CODE, Message: models.SUCCESS_MESS}
+	} else if res == models.DB_ERROR {
+		info = PasswordModiRes{Code: models.DB_ERROR_CODE, Message: models.DB_ERROR_MESS}
+	} else if res == models.REQUIRE_FIELD_EMPTY {
+		info = PasswordModiRes{Code: models.REQUIRE_FIELD_EMPTY_CODE, Message: models.REQUIRE_FIELD_EMPTY_MESS}
+	} else if res == models.USER_NOT_EXIST {
+		info = PasswordModiRes{Code: models.USER_NOT_EXIST_CODE, Message: models.USER_NOT_EXIST_MESS}
+	} else if res == models.PASSWORD_ERROR {
+		info = PasswordModiRes{Code: models.PASSWORD_ERROR_CODE, Message: models.PASSWORD_ERROR_MESS}
 	}
 	res_json, _ := json.Marshal(info)
 	fmt.Fprint(w, string(res_json))
