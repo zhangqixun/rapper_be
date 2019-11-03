@@ -12,7 +12,11 @@ import (
 var RedisConn redis.Conn
 
 func establishRedis() {
-	RedisConn, _ = redis.Dial("tcp", RedisAddr)
+	var err error
+	RedisConn, err = redis.Dial("tcp", RedisAddr)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func PreprocessXHR(w *http.ResponseWriter, r *http.Request) {
