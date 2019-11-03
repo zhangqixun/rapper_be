@@ -1,6 +1,7 @@
 package utility
 
 import (
+	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"github.com/satori/go.uuid"
 	"log"
@@ -24,7 +25,8 @@ func PreprocessXHR(w *http.ResponseWriter, r *http.Request) {
 func NewSession(uid int) string {
 	establishRedis()
 	u, _ := uuid.NewV4()
-	_, err := RedisConn.Do("SET", u, strconv.Itoa(uid))
+	fmt.Println(u.String() + " " + strconv.Itoa(uid))
+	_, err := RedisConn.Do("SET", u.String(), strconv.Itoa(uid))
 	if err != nil {
 		log.Fatal(err)
 	}
