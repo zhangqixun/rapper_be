@@ -3,6 +3,7 @@ package utility
 import (
 	"github.com/garyburd/redigo/redis"
 	"github.com/satori/go.uuid"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -22,26 +23,34 @@ func PreprocessXHR(w *http.ResponseWriter, r *http.Request) {
 
 func NewSession(uid int) string {
 	establishRedis()
-	defer RedisConn.Close()
 	u, _ := uuid.NewV4()
-	RedisConn.Do("SET", u, strconv.Itoa(uid))
+	_, err := RedisConn.Do("SET", u, strconv.Itoa(uid))
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = RedisConn.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 	return u.String()
 }
 
 func CheckSession(token string) int {
 	establishRedis()
-	defer RedisConn.Close()
 	uid, err := redis.String(RedisConn.Do("GET", token))
 	if err != nil {
 		return -1
 	}
 	id, _ := strconv.Atoi(uid)
+	err = RedisConn.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 	return id
 }
 
 func DropSession(token string) int {
 	establishRedis()
-	defer RedisConn.Close()
 	uid, err := redis.String(RedisConn.Do("GET", token))
 	if err != nil {
 		return -1
@@ -50,6 +59,13 @@ func DropSession(token string) int {
 	if err != nil {
 		return -1
 	}
-	RedisConn.Do("DEL", token)
+	_, err = RedisConn.Do("DEL", token)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = RedisConn.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 	return id
 }
