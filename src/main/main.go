@@ -44,6 +44,7 @@ func main() {
 	rtr.HandleFunc("/editor", controllers.UserEditor).Methods("POST")
 	rtr.HandleFunc("/userquery", controllers.UserQuery).Methods("POST")
 	rtr.HandleFunc("/passwdmodi", controllers.UserPasswordModification).Methods("POST")
+	rtr.HandleFunc("/movietypequery", controllers.MovieTypeQuery).Methods("GET")
 	http.Handle("/", rtr)
 
 	log.Println("Server running.")
