@@ -20,6 +20,36 @@ func DestroyNeo4j() (err error) {
 	return
 }
 
+func QueryTopSimilarities(movie string) (movies []string, err error) {
+	var (
+		session neo4j.Session
+		result  neo4j.Result
+	)
+	session, err = Neo4jDriver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return nil, err
+	}
+	defer session.Close()
+	_, err = session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		log.Println("Starting query.")
+		result, err = transaction.Run("MATCH (m:Movie {MovieID: $MovieID})-[s:Similar]-(t)\n"+
+			"RETURN t.MovieID\n"+
+			"ORDER BY s.Similarity DESC LIMIT 10", map[string]interface{}{"MovieID": movie})
+		if err != nil {
+			return nil, err
+		}
+		log.Println("Result acquired.")
+		for {
+			if result.Next() {
+				movies = append(movies, result.Record().GetByIndex(0).(string))
+			} else {
+				return nil, nil
+			}
+		}
+	})
+	return movies, err
+}
+
 func ImportData(url string) (err error) {
 	var (
 		session neo4j.Session

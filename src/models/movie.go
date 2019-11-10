@@ -38,3 +38,13 @@ func TypeQuery(movieType string) (movies []Movie, count int, res int) {
 	res = SUCCESS
 	return
 }
+
+func SimilarityQuery(movie string) (movies []string, res int) {
+	movies, err := utility.QueryTopSimilarities(movie)
+	if err != nil {
+		res = DB_ERROR
+		return
+	}
+	res = SUCCESS
+	return
+}

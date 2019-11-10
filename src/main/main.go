@@ -31,7 +31,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = utility.ImportData("https://rapp.oss-cn-beijing.aliyuncs.com/movies2.csv")
+
+	_, err = utility.QueryTopSimilarities("1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,6 +46,7 @@ func main() {
 	rtr.HandleFunc("/userquery", controllers.UserQuery).Methods("POST")
 	rtr.HandleFunc("/passwdmodi", controllers.UserPasswordModification).Methods("POST")
 	rtr.HandleFunc("/movietypequery", controllers.MovieTypeQuery).Methods("GET")
+	rtr.HandleFunc("/movie/similarity", controllers.MovieSimilarityQuery).Methods("GET")
 	http.Handle("/", rtr)
 
 	log.Println("Server running.")
