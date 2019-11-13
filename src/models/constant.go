@@ -1,6 +1,6 @@
 package models
 
-const PER_PAGE int = 8
+const PER_PAGE int = 9
 
 const SUCCESS int = 0
 const DB_ERROR int = -1
