@@ -27,15 +27,15 @@ func main() {
 	utility.Neo4jUser = *Neo4jUser
 	utility.Neo4jPassword = *Neo4jPassword
 
-	err = utility.InitNeo4j()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = utility.QueryTopSimilarities("1")
-	if err != nil {
-		log.Fatal(err)
-	}
+	//err = utility.InitNeo4j()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//_, err = utility.QueryTopSimilarities("1")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	rtr := mux.NewRouter()
 	rtr.HandleFunc("/quickstart", controllers.QuickStart)
@@ -45,7 +45,8 @@ func main() {
 	rtr.HandleFunc("/editor", controllers.UserEditor).Methods("POST")
 	rtr.HandleFunc("/userquery", controllers.UserQuery).Methods("POST")
 	rtr.HandleFunc("/passwdmodi", controllers.UserPasswordModification).Methods("POST")
-	rtr.HandleFunc("/movietypequery", controllers.MovieTypeQuery).Methods("GET")
+	rtr.HandleFunc("/movie/type", controllers.MovieTypeQuery).Methods("GET")
+	rtr.HandleFunc("/movie/keyword", controllers.MovieKeywordQuery).Methods("GET")
 	rtr.HandleFunc("/movie/similarity", controllers.MovieSimilarityQuery).Methods("GET")
 	http.Handle("/", rtr)
 

@@ -25,6 +25,24 @@ type Movie struct {
 	ImdbID     string `json:"imdb_id"`
 }
 
+func KeywordQuery(keyword string, kind string) (movies []Movie, count int, res int) {
+	db, err := gorm.Open("mysql", utility.DBAddr)
+	if err != nil {
+		fmt.Println(err)
+		res = DB_ERROR
+		return
+	}
+	defer db.Close()
+
+	if kind == "title" {
+		db.Where("title like ?", "%"+keyword+"%").Order("imdb_rating desc").Find(&movies).Count(&count)
+	} else if kind == "actor" {
+		db.Where("actors like ?", "%"+keyword+"%").Order("imdb_rating desc").Find(&movies).Count(&count)
+	}
+	res = SUCCESS
+	return
+}
+
 func TypeQuery(movieType string) (movies []Movie, count int, res int) {
 	db, err := gorm.Open("mysql", utility.DBAddr)
 	if err != nil {
