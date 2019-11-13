@@ -8,6 +8,7 @@ const REQUIRE_FIELD_EMPTY int = -2
 const USER_EXIST int = -3
 const USER_NOT_EXIST int = -4
 const PASSWORD_ERROR int = -5
+const NO_DATA int = -6
 
 const SUCCESS_MESS string = "success"
 const DB_ERROR_MESS string = "database error"

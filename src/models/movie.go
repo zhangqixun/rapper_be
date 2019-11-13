@@ -25,6 +25,24 @@ type Movie struct {
 	ImdbID     string `json:"imdb_id"`
 }
 
+func IDQuery(id int) (movie Movie, res int) {
+	db, err := gorm.Open("mysql", utility.DBAddr)
+	if err != nil {
+		fmt.Println(err)
+		res = DB_ERROR
+		return
+	}
+	defer db.Close()
+
+	db.Where("id = ?", id).First(&movie)
+	if movie.ID == 0 {
+		res = NO_DATA
+	} else {
+		res = SUCCESS
+	}
+	return
+}
+
 func KeywordQuery(keyword string, kind string) (movies []Movie, count int, res int) {
 	db, err := gorm.Open("mysql", utility.DBAddr)
 	if err != nil {
