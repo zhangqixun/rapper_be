@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"models"
 	"net/http"
+	"time"
 	"utility"
 )
 
@@ -65,6 +66,12 @@ type BrowseInfo struct {
 type BrowseRes struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
+}
+
+type BrowseQueryRes struct {
+	Code    string             `json:"code"`
+	Message string             `json:"message"`
+	Data    []models.Footprint `json:"data"`
 }
 
 func UserRegister(w http.ResponseWriter, r *http.Request) {
@@ -210,9 +217,10 @@ func UserBrowse(w http.ResponseWriter, r *http.Request) {
 
 	user_id := utility.CheckSession(browse_info.Token)
 	footprint := models.Footprint{
-		UserID:     user_id,
-		MovieID:    browse_info.MovieID,
-		TimeOnSite: browse_info.TimeOnSite,
+		UserID:      user_id,
+		MovieID:     browse_info.MovieID,
+		TimeOnSite:  browse_info.TimeOnSite,
+		CreatedTime: time.Now().UnixNano(),
 	}
 	res := models.InsertFootprint(footprint)
 
@@ -232,6 +240,33 @@ func UserBrowse(w http.ResponseWriter, r *http.Request) {
 			Code:    models.REQUIRE_FIELD_EMPTY_CODE,
 			Message: models.REQUIRE_FIELD_EMPTY_MESS,
 		}
+	}
+	res_json, _ := json.Marshal(info)
+	fmt.Fprint(w, string(res_json))
+}
+
+func UserBrowseQuery(w http.ResponseWriter, r *http.Request) {
+	utility.PreprocessXHR(&w, r)
+
+	body, _ := ioutil.ReadAll(r.Body)
+	var token_info TokenInfo
+	_ = json.Unmarshal(body, &token_info)
+
+	user_id := utility.CheckSession(token_info.Token)
+	footprints, count, res := models.GetFootprint(user_id)
+
+	var info BrowseQueryRes
+
+	if res == models.DB_ERROR {
+		info.Code = models.DB_ERROR_CODE
+		info.Code = models.DB_ERROR_MESS
+	} else if count == 0 {
+		info.Code = models.NO_DATA_CODE
+		info.Message = models.NO_DATA_MESS
+	} else {
+		info.Code = models.SUCCESS_CODE
+		info.Message = models.SUCCESS_MESS
+		info.Data = footprints
 	}
 	res_json, _ := json.Marshal(info)
 	fmt.Fprint(w, string(res_json))

@@ -49,6 +49,8 @@ func main() {
 	rtr.HandleFunc("/movie/type", controllers.MovieTypeQuery).Methods("GET")
 	rtr.HandleFunc("/movie/keyword", controllers.MovieKeywordQuery).Methods("GET")
 	rtr.HandleFunc("/movie/similarity", controllers.MovieSimilarityQuery).Methods("GET")
+	rtr.HandleFunc("/user/footprint/new", controllers.UserBrowse).Methods("POST")
+	rtr.HandleFunc("/user/footprints", controllers.UserBrowseQuery).Methods("POST")
 	http.Handle("/", rtr)
 
 	log.Println("Server running.")
