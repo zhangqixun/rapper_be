@@ -45,6 +45,7 @@ func main() {
 	rtr.HandleFunc("/editor", controllers.UserEditor).Methods("POST")
 	rtr.HandleFunc("/userquery", controllers.UserQuery).Methods("POST")
 	rtr.HandleFunc("/passwdmodi", controllers.UserPasswordModification).Methods("POST")
+	rtr.HandleFunc("/movie/id", controllers.MovieIDQuery).Methods("GET")
 	rtr.HandleFunc("/movie/type", controllers.MovieTypeQuery).Methods("GET")
 	rtr.HandleFunc("/movie/keyword", controllers.MovieKeywordQuery).Methods("GET")
 	rtr.HandleFunc("/movie/similarity", controllers.MovieSimilarityQuery).Methods("GET")
