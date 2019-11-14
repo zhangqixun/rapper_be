@@ -61,6 +61,7 @@ type BrowseInfo struct {
 	Token      string `json:"token"`
 	MovieID    int    `json:"movie_id"`
 	TimeOnSite string `json:"time_on_site"`
+	MovieTitle string `json:"movie_title"`
 }
 
 type BrowseRes struct {
@@ -220,7 +221,8 @@ func UserBrowse(w http.ResponseWriter, r *http.Request) {
 		UserID:      user_id,
 		MovieID:     browse_info.MovieID,
 		TimeOnSite:  browse_info.TimeOnSite,
-		CreatedTime: time.Now().UnixNano(),
+		CreatedTime: time.Now().Unix(),
+		MovieTitle:  browse_info.MovieTitle,
 	}
 	res := models.InsertFootprint(footprint)
 

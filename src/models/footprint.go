@@ -12,6 +12,7 @@ type Footprint struct {
 	MovieID     int    `json:"movie_id"`
 	TimeOnSite  string `json:"time_on_site"`
 	CreatedTime int64  `json:"created_time"`
+	MovieTitle  string `json:"movie_title"`
 }
 
 func InsertFootprint(footprint Footprint) (res int) {
@@ -23,7 +24,7 @@ func InsertFootprint(footprint Footprint) (res int) {
 	}
 	defer db.Close()
 
-	if footprint.UserID == 0 || footprint.MovieID == 0 || len(footprint.TimeOnSite) == 0 || footprint.CreatedTime == 0 {
+	if footprint.UserID == 0 || footprint.MovieID == 0 || len(footprint.TimeOnSite) == 0 || footprint.CreatedTime == 0 || len(footprint.MovieTitle) == 0 {
 		res = REQUIRE_FIELD_EMPTY
 		return
 	}
