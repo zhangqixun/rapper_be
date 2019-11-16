@@ -27,11 +27,11 @@ func main() {
 	utility.Neo4jUser = *Neo4jUser
 	utility.Neo4jPassword = *Neo4jPassword
 
-	//err = utility.InitNeo4j()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
+	err = utility.InitNeo4j()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	//_, err = utility.QueryTopSimilarities("1")
 	//if err != nil {
 	//	log.Fatal(err)

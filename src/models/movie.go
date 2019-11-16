@@ -75,12 +75,24 @@ func TypeQuery(movieType string) (movies []Movie, count int, res int) {
 	return
 }
 
-func SimilarityQuery(movie string) (movies []string, res int) {
-	movies, err := utility.QueryTopSimilarities(movie)
+func SimilarityQuery(movie string) (movies []Movie, res int) {
+	db, err := gorm.Open("mysql", utility.DBAddr)
+	if err != nil {
+		fmt.Println(err)
+		res = DB_ERROR
+		return
+	}
+	defer db.Close()
+	moviestr, err := utility.QueryTopSimilarities(movie)
 	if err != nil {
 		res = DB_ERROR
 		return
 	}
 	res = SUCCESS
+	for _, v := range moviestr {
+		var movie Movie
+		db.Where("id = ?", v).First(&movie)
+		movies = append(movies, movie)
+	}
 	return
 }

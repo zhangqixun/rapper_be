@@ -46,9 +46,9 @@ type MovieQueryRes struct {
 }
 
 type MovieSimilarityRes struct {
-	Code    string   `json:"code"`
-	Data    []string `json:"data"`
-	Message string   `json:"message"`
+	Code    string         `json:"code"`
+	Data    []models.Movie `json:"data"`
+	Message string         `json:"message"`
 }
 
 func MovieIDQuery(w http.ResponseWriter, r *http.Request) {
