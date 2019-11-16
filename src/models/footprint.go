@@ -47,3 +47,17 @@ func GetFootprint(user_id int) (footprints []Footprint, count int, res int) {
 	res = SUCCESS
 	return
 }
+
+func GetFootprintAll() (footprints []Footprint, count int, res int) {
+	db, err := gorm.Open("mysql", utility.DBAddr)
+	if err != nil {
+		fmt.Println(err)
+		res = DB_ERROR
+		return
+	}
+	defer db.Close()
+
+	db.Order("created_time desc").Find(&footprints).Count(&count)
+	res = SUCCESS
+	return
+}
