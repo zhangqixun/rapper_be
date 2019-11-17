@@ -232,3 +232,26 @@ func MovieSimilarityQuery(w http.ResponseWriter, r *http.Request) {
 	ret, _ := json.Marshal(info)
 	fmt.Fprint(w, string(ret))
 }
+
+func MovieRecommendationQuery(w http.ResponseWriter, r *http.Request) {
+	utility.PreprocessXHR(&w, r)
+	vars := r.URL.Query()
+	user, exists := vars["user"]
+	info := MovieSimilarityRes{}
+	if !exists {
+		info.Code = models.REQUIRE_FIELD_EMPTY_CODE
+		info.Message = models.REQUIRE_FIELD_EMPTY_MESS
+	} else {
+		movies, code := models.GetRecommendationViaFootprint(user[0])
+		if code != models.SUCCESS {
+			info.Code = models.DB_ERROR_CODE
+			info.Message = models.DB_ERROR_MESS
+		} else {
+			info.Code = models.SUCCESS_CODE
+			info.Message = models.SUCCESS_MESS
+			info.Data = movies
+		}
+	}
+	ret, _ := json.Marshal(info)
+	fmt.Fprint(w, string(ret))
+}

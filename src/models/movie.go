@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"strings"
 	"utility"
 )
 
@@ -23,6 +24,11 @@ type Movie struct {
 	Poster     string `json:"poster"`
 	ImdbRating string `json:"imdb_rating"`
 	ImdbID     string `json:"imdb_id"`
+}
+
+type Rec struct {
+	User int    `json:"user"`
+	Recs string `json:"recs"`
 }
 
 func IDQuery(id int) (movie Movie, res int) {
@@ -90,6 +96,26 @@ func SimilarityQuery(movie string) (movies []Movie, res int) {
 	}
 	res = SUCCESS
 	for _, v := range moviestr {
+		var movie Movie
+		db.Where("id = ?", v).First(&movie)
+		movies = append(movies, movie)
+	}
+	return
+}
+
+func GetRecommendationViaFootprint(user string) (movies []Movie, res int) {
+	db, err := gorm.Open("mysql", utility.DBAddr)
+	if err != nil {
+		fmt.Println(err)
+		res = DB_ERROR
+		return
+	}
+	defer db.Close()
+	var recs Rec
+	db.Where("user = ?", user).First(&recs)
+	ids := strings.Split(recs.Recs, " ")
+	res = SUCCESS
+	for _, v := range ids {
 		var movie Movie
 		db.Where("id = ?", v).First(&movie)
 		movies = append(movies, movie)

@@ -53,6 +53,7 @@ func main() {
 	rtr.HandleFunc("/user/footprints", controllers.UserBrowseQuery).Methods("POST")
 	rtr.HandleFunc("/user/footprints/ID", controllers.UserBrowseQueryWithID).Methods("POST")
 	rtr.HandleFunc("/user/footprints/all", controllers.UserBrowseQueryAll).Methods("POST")
+	rtr.HandleFunc("/movie/recommendation", controllers.MovieRecommendationQuery).Methods("GET")
 	http.Handle("/", rtr)
 
 	log.Println("Server running.")
